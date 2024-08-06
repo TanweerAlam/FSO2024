@@ -8,6 +8,17 @@ const Header = (props) => {
 const Content = (props) => {
   console.log(props);
   return (
+    <>
+      <Part part={props.part} exercises={props.exercises} />
+      <Part part={props.part} exercises={props.exercises}  />
+      <Part part={props.part} exercises={props.exercises}  />
+    </>
+  )
+}
+
+const Part = (props) => {
+  console.log(props)
+  return (
     <p>
       {props.part} {props.exercises}
     </p>
