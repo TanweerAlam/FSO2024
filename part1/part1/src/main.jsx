@@ -9,11 +9,35 @@
 //   </React.StrictMode>,
 // )
 
+// ********************eg. 2***************************
 
-import ReactDOM from 'react-dom/client';
+// import ReactDOM from 'react-dom/client';
 
-import App from './App';
+// import App from './App';
 
-const rootElement = document.getElementById('root');
+// const rootElement = document.getElementById('root');
 
-ReactDOM.createRoot(rootElement).render(<App/>);
+// let counter = 1;
+
+// // const refresh = () => ReactDOM.createRoot(rootElement).render(<App counter={counter}/>);
+
+// // refresh()
+// // counter += 1
+// // refresh()
+// // counter += 1
+// // refresh()
+
+// // setInterval(() => {
+// //     refresh()
+// //     counter += 1
+// // }, 1000)
+
+// ReactDOM.createRoot(rootElement).render(<App counter={counter}/>);
+
+// *********************eg. 3***************************
+
+import ReactDOM from 'react-dom/client'
+
+import App from "./App"
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />)
