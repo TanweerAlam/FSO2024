@@ -1,30 +1,59 @@
 import { useState } from "react"
 import Person from "./Components/Person"
+import Filter from "./Components/Filter"
+import PersonForm from "./Components/PersonForm"
+import Persons from "./Components/Persons"
 
 
 const App = () => {
-  const [persons, setPersons] = useState([{
-    name: 'Arto Hellas'
-  }])
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])
 
+  const [filterName, setFilterName] = useState('')
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+
   const handleNewName = (event) => setNewName(event.target.value)
+  const handleNewNumber = (event) => setNewNumber(event.target.value)
+
+  const handleFilterName = (event) => {
+    setFilterName(event.target.value)
+  }
+
+  const personsToShow = !filterName ? persons : persons.filter(person => {
+    const insensitiveName = person.name.toLowerCase()
+    const insensitiveFilter = filterName.toLowerCase()
+
+    return insensitiveName.includes(insensitiveFilter)
+})
 
   const handleAddPerson = (event) => {
     event.preventDefault();
     // console.log("Add person form submitted")
-    const newPerson = {
-      name: newName
-    }
-    const isObjectSame = persons.some(person => sameObjects(person, newPerson))
-    // console.log("Has same object ", isObjectSame)
+    if (newName && newNumber.length === 11){
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+        id: String(persons.length + 1)
+      }
+      const isObjectSame = persons.some(person => sameObjects(person, newPerson))
+      // console.log("Has same object ", isObjectSame)
 
-    if (isObjectSame) {
-      alert(`${newName} is already added to phonebook`)
+      if (isObjectSame) {
+        alert(`${newName} is already added to phonebook`)
+      }
+      else{
+        setPersons(persons.concat(newPerson))
+        setNewName('')
+        setNewNumber('')
+      }
     }
-    else{
-      setPersons(persons.concat(newPerson))
-      setNewName('')
+    else {
+      alert(`Must have 11-digits of number and a name.`)
     }
   }
 
@@ -75,26 +104,30 @@ const App = () => {
     return allKeysExist && allKeyValuesMatch;
   }
 
-  console.log("App is working...")
+  // console.log("App is working...")
   return (
     <div>
-    <h2>Phonebook</h2>
-    <form onSubmit={handleAddPerson}>
-      <div>
-        name: <input value={newName} onChange={handleNewName} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
 
-    {/* <div>debug: {newName}</div> */}
+      <h2>Phonebook</h2>
+      <Filter
+        filterName={filterName}
+        handleFilterName={handleFilterName}
+      />
 
-    <h2>Numbers</h2>
-    {
-      persons.map(person => <Person person={person} />)
-    }
-  </div>
+      <h3>Add a new</h3>
+      <PersonForm
+        handleAddPerson={handleAddPerson}
+        newName={newName}
+        handleNewName={handleNewName}
+        newNumber={newNumber}
+        handleNewNumber={handleNewNumber}
+      />
+
+      {/* <div>debug: {newName}</div> */}
+
+      <h3>Numbers</h3>
+      <Persons personsToShow={personsToShow} />
+    </div>
   )
 }
 

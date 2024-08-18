@@ -1,9 +1,9 @@
 const Person = (props) => {
-    // console.log(props)
+    console.log(props)
     const {person} = props
 
     return(
-        <p>{person.name}</p>
+        <p>{person.name} {person.number}</p>
     )
 }
 
