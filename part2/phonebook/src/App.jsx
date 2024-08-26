@@ -3,8 +3,9 @@ import Person from "./Components/Person"
 import Filter from "./Components/Filter"
 import PersonForm from "./Components/PersonForm"
 import Persons from "./Components/Persons"
-import axios from "axios"
+
 import { useEffect } from "react"
+import personServices from "./services/persons"
 
 
 const App = () => {
@@ -15,13 +16,12 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
 
   const fetchPersons = () => {
-    axios
-    .get("http://localhost:3001/persons")
-    .then(response => {
-      setPersons(response.data)
-      console.log("Fetching persons:", response.data)
-    })
-
+    personServices
+      .getAll()
+      .then(result => {
+        console.log("fetch result ", result)
+        setPersons(result)
+      })
   }
 
   useEffect(fetchPersons, []);
@@ -38,7 +38,7 @@ const App = () => {
     const insensitiveFilter = filterName.toLowerCase()
 
     return insensitiveName.includes(insensitiveFilter)
-})
+  })
 
   const handleAddPerson = (event) => {
     event.preventDefault();
@@ -56,19 +56,36 @@ const App = () => {
         alert(`${newName} is already added to phonebook`)
       }
       else{
-        axios
-          .post("http://localhost:3001/persons", newPerson)
-          .then(response => {
-            setPersons(persons.concat(response.data))
+        personServices
+          .create(newPerson)
+          .then(result => {
+            setPersons(persons.concat(result))
             setNewName('')
             setNewNumber('')
-            console.log(response.data)
+            console.log(result)
           })
       }
     }
     else {
       alert(`Must have 11-digits of number and a name.`)
     }
+  }
+
+  const handleRemovePerson = (id) => {
+    if(window.confirm("Do you really want to delete this contact?")){
+      // console.log("Remove person of ", id)
+      personServices
+          .deletePerson(id)
+          .then(result => {
+              // console.log("Result in Persons component is", result)
+              // console.log("Status:- ", result.status)
+              if(result.status === 200){
+                  // console.log("Contact deleted ", result.data)
+                  setPersons(persons.filter(person => person.id !== id))
+              }
+          })
+    }
+    else console.log("Remove request cancelled.")
   }
 
   const sameObjects = (first, second) => {
@@ -130,17 +147,17 @@ const App = () => {
 
       <h3>Add a new</h3>
       <PersonForm
-        handleAddPerson={handleAddPerson}
-        newName={newName}
-        handleNewName={handleNewName}
-        newNumber={newNumber}
-        handleNewNumber={handleNewNumber}
+        handleAddPerson = {handleAddPerson}
+        newName = {newName}
+        handleNewName = {handleNewName}
+        newNumber = {newNumber}
+        handleNewNumber = {handleNewNumber}
       />
 
       {/* <div>debug: {newName}</div> */}
 
       <h3>Numbers</h3>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleRemovePerson={handleRemovePerson} />
     </div>
   )
 }

@@ -1,9 +1,9 @@
 const Person = (props) => {
     console.log(props)
-    const {person} = props
+    const {person, handleRemovePerson} = props
 
     return(
-        <p>{person.name} {person.number}</p>
+        <p>{person.name} {person.number} <button onClick={handleRemovePerson}>delete</button></p>
     )
 }
 
