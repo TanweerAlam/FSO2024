@@ -49,13 +49,37 @@ const App = () => {
         number: newNumber,
         // id: String(persons.length + 1)
       }
-      const isObjectSame = persons.some(person => sameObjects(person, newPerson))
-      // console.log("Has same object ", isObjectSame)
 
-      if (isObjectSame) {
-        alert(`${newName} is already added to phonebook`)
+      const presentPerson = persons.find(person => person.name === newPerson.name)
+      console.log("Present person", presentPerson)
+      if (presentPerson){
+        const confirmationText = `${presentPerson.name} is already added to phonebook, replace the old number with new one?`
+
+        if (window.confirm(confirmationText)){
+          console.log("Proceed with updation")
+
+          personServices
+            .update(presentPerson.id, newPerson)
+            .then(response => {
+              console.log('Updating response', response)
+              setPersons(persons.map(person => person.id !== response.id ? person : response))
+              setNewName('')
+              setNewNumber('')
+            })
+            // .catch(error => alert('We got an error', error))
+            .catch(error => {
+              alert(
+                `the contact '${presentPerson.name}' was already deleted from server`
+              )
+              setPersons(persons.filter(person => person.id !== presentPerson.id))
+            })
+        }
+        else {
+          console.log("request cancelled")
+        }
       }
-      else{
+      else {
+        console.log("Object is not available, let's create a new object")
         personServices
           .create(newPerson)
           .then(result => {
@@ -65,6 +89,31 @@ const App = () => {
             console.log(result)
           })
       }
+
+    //   const isObjectSame = persons.some(person => sameObjects(person, newPerson))
+    //   // console.log("Has same object ", isObjectSame)
+
+    //   if (isObjectSame) {
+    //     const confirmationText = `${newName} is already added to phonebook, replace the old number with new one?`
+    //     if (window.confirm(confirmationText)){
+    //       const updatePerson = persons.find(person => person.name === newPerson.name)
+    //       console.log(updatePerson.id)
+    //       // update services
+    //     }
+    //     else {
+    //       console.log("Request cancelled")
+    //     }
+    //   }
+    //   else{
+    //     personServices
+    //       .create(newPerson)
+    //       .then(result => {
+    //         setPersons(persons.concat(result))
+    //         setNewName('')
+    //         setNewNumber('')
+    //         console.log(result)
+    //       })
+    //   }
     }
     else {
       alert(`Must have 11-digits of number and a name.`)
