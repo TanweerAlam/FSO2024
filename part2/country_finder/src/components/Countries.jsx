@@ -6,7 +6,6 @@ const Countries = ({countries}) => {
 
     if (countries.length === 1) {
         const country = countries[0]
-
         return(
             <>
                 <Country country={country} />
