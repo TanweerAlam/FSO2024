@@ -1,10 +1,10 @@
-import { useState } from "react"
-import Person from "./Components/Person"
+import { useState, useEffect } from "react"
+
 import Filter from "./Components/Filter"
 import PersonForm from "./Components/PersonForm"
 import Persons from "./Components/Persons"
+import Notification from "./Components/Notification"
 
-import { useEffect } from "react"
 import personServices from "./services/persons"
 
 
@@ -14,6 +14,7 @@ const App = () => {
   const [filterName, setFilterName] = useState('')
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [message, setMessage] = useState(null)
 
   const fetchPersons = () => {
     personServices
@@ -65,13 +66,19 @@ const App = () => {
               setPersons(persons.map(person => person.id !== response.id ? person : response))
               setNewName('')
               setNewNumber('')
+
+              setMessage({message: `${response.name}'s number has been updated`, type: "success"})
+              setTimeout(() => setMessage(null), 5000)
             })
             // .catch(error => alert('We got an error', error))
             .catch(error => {
-              alert(
-                `the contact '${presentPerson.name}' was already deleted from server`
-              )
+              console.log("Catch body executed")
+
+              setMessage({message: `contact '${newPerson.name}' was already deleted from server`, type: "error"})
+              setTimeout(() => setMessage(null), 5000)
               setPersons(persons.filter(person => person.id !== presentPerson.id))
+
+              console.log("Catch body completed")
             })
         }
         else {
@@ -87,6 +94,13 @@ const App = () => {
             setNewName('')
             setNewNumber('')
             console.log(result)
+
+            setMessage({message: `Added ${result.name}`, type: "success"})
+            setTimeout(() => setMessage(null), 5000)
+          })
+          .catch(error => {
+            setMessage({message: `HTTP request error`, type: "error"})
+            setTimeout(() => setMessage(null), 5000)
           })
       }
 
@@ -132,6 +146,10 @@ const App = () => {
                   // console.log("Contact deleted ", result.data)
                   setPersons(persons.filter(person => person.id !== id))
               }
+          })
+          .catch(error => {
+            setMessage({message: `Information of the contact has been removed from server`, type: "error"})
+            setTimeout(() => setMessage(null), 5000)
           })
     }
     else console.log("Remove request cancelled.")
@@ -189,6 +207,7 @@ const App = () => {
     <div>
 
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter
         filterName={filterName}
         handleFilterName={handleFilterName}

@@ -4,7 +4,7 @@ import persons from "../services/persons"
 
 const Persons = (props) => {
     const {personsToShow, handleRemovePerson} = props
-    console.log("props in Persons ", props)
+    // console.log("props in Persons ", props)
 
     return(
         <>

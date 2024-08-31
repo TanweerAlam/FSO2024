@@ -1,5 +1,5 @@
 const Person = (props) => {
-    console.log(props)
+    // console.log(props)
     const {person, handleRemovePerson} = props
 
     return(
