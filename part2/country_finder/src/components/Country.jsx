@@ -12,7 +12,7 @@ const Country = ({country}) => {
             <h2>languages</h2>
             <ul>
                 {
-                    Object.values(languages).map(language => <li>{language}</li>)
+                    Object.values(languages).map((language, index) => <li key={index}>{language}</li>)
                 }
             </ul>
             <img src={flags.png} alt="national flag" width={240} height={140} />
