@@ -23,7 +23,6 @@ const App = (props) => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState("a new note...")
   const [showAll, setShowAll] = useState(true)
-  // console.log("props in App", notes)
   const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
@@ -37,18 +36,18 @@ const App = (props) => {
 
     noteServices
       .getAll()
-      .then(returnedNotes => setNotes(returnedNotes))
+      .then(initialNotes => setNotes(initialNotes))
   }, [])
   console.log("render", notes.length, "notes")
 
   const handleNoteChange = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setNewNote(event.target.value)
   }
 
   const addNote = (event) => {
     event.preventDefault()
-    console.log("button clicked ", event.target)
+    // console.log("button clicked ", event.target)
     const noteObject = {
       content: newNote,
       important: Math.random() > 0.5,
@@ -68,18 +67,22 @@ const App = (props) => {
   }
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
-  console.log(notesToShow)
+  console.log("notesToShow: ", notesToShow)
 
   const toggleImportanceOf = (id) => {
-    const url = `http://localhost:3001/notes/${id}`
+    // const url = `http://localhost:3001/api/notes/${id}`
+    const url = `/api/notes/${id}`
     const note = notes.find(note => note.id === id)
     const changedNote = {...note, important: !note.important}
+
+    // console.log(changedNote)
 
     // axios
     //   .put(url, changedNote)
     //   .then(response => {
     //     setNotes(notes.map(note => note.id !== id ? note : response.data))
     //   })
+
     noteServices
       .update(id, changedNote)
       .then(response => setNotes(notes.map(note => note.id !== id ? note : response )))
